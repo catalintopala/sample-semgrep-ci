@@ -1,0 +1,62 @@
+# Name of this GitHub Actions workflow.
+name: Semgrep
+
+on:
+  # Scan changed files in PRs (diff-aware scanning):
+  pull_request: {}
+  # Scan on-demand through GitHub Actions interface:
+  workflow_dispatch: {}
+  # Scan mainline branches and report all findings:
+  push:
+    branches: 
+      - "main"
+
+jobs:
+  semgrep_scan:
+    # User definable name of this GitHub Actions job.
+    name: semgrep/ci
+    # If you are self-hosting, change the following `runs-on` value:
+    runs-on: ubuntu-latest
+    container:
+      # A Docker image with Semgrep installed. Do not change this.
+      image: semgrep/semgrep@sha256:46c44b623972875ebc6273adb3d725f0411f81b52f8e077aabf21629a6190c39 # v1.135.0
+      options: --user root
+    # Skip any PR created by dependabot to avoid permission issues:
+    if: (github.actor != 'dependabot[bot]')
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+    defaults:
+      run:
+        working-directory: vulnerable-source-code
+
+    steps:
+      # Fetch project source with GitHub Actions Checkout.
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Perform Semgrep Analysis
+      # @NOTE: This is the actual semgrep command to scan your code.
+      # Modify the --config option to 'r/all' to scan using all rules,
+      # or use multiple flags to specify particular rules, such as
+      # --config r/all --config custom/rules
+        run: semgrep scan --sarif --config auto ./vulnerable-source-code > semgrep.sarif
+
+      # upload the results for the CodeQL GitHub app to annotate the code
+      # - name: Save SARIF results as artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: semgrep-scan-results
+      #     path: semgrep.sarif
+
+      # Upload SARIF file generated in previous step
+      - name: Upload SARIF result to the GitHub Security Dashboard
+        uses: github/codeql-action/upload-sarif@f1f6e5f6af878fb37288ce1c627459e94dbf7d01 # v3.30.1
+        with:
+          sarif_file: semgrep.sarif
+        if: always()
