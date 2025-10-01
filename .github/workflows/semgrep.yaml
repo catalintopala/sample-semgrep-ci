@@ -50,11 +50,11 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: semgrep-scan-results
-          path: semgrep.sarif
+          path: vulnerable-source-code/semgrep.sarif
 
       # Upload SARIF file generated in previous step
       - name: Upload SARIF result to the GitHub Security Dashboard
         uses: github/codeql-action/upload-sarif@f1f6e5f6af878fb37288ce1c627459e94dbf7d01 # v3.30.1
         with:
-          sarif_file: semgrep.sarif
+          sarif_file: vulnerable-source-code/semgrep.sarif
         if: always()
