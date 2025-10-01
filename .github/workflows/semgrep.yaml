@@ -37,6 +37,8 @@ jobs:
       # Fetch project source with GitHub Actions Checkout.
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
 
       - name: Perform Semgrep Analysis
       # @NOTE: This is the actual semgrep command to scan your code.
@@ -44,13 +46,6 @@ jobs:
       # or use multiple flags to specify particular rules, such as
       # --config r/all --config custom/rules
         run: semgrep scan --sarif --config auto > semgrep.sarif
-
-      # upload the results for the CodeQL GitHub app to annotate the code
-      - name: Save SARIF results as artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: semgrep-scan-results
-          path: vulnerable-source-code/semgrep.sarif
 
       # Upload SARIF file generated in previous step
       - name: Upload SARIF result to the GitHub Security Dashboard
