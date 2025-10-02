@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router()
 import request from 'request';
 
-router.post('/downlad-url', (req, res) => {
+router.post('/download-url', (req, res) => {
     downloadURL(req.body.url, () =>{
         res.send('Done')
     }) 
