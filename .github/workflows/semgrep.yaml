@@ -11,7 +11,7 @@ on:
     branches: 
       - main
     paths:
-      - vulnerable-source-code
+      - "vulnerable-source-code/**"
 
 jobs:
   semgrep_scan:
