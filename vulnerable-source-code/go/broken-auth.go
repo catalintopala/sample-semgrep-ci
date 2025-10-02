@@ -4,9 +4,6 @@ package main
 * YesWeHack - Vulnerable code snippets
  */
 
-/** Run the code snippet
-* COMMAND: go run 5-BrokenAuth.go
- */
 import (
 	"fmt"
 	"log"

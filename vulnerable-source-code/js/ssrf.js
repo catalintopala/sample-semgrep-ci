@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router()
-const request = require('request');
+import { Router } from 'express';
+const router = Router()
+import request from 'request';
 
 router.post('/downlad-url', (req, res) => {
     downloadURL(req.body.url, () =>{
@@ -21,4 +21,4 @@ const downloadURL = (url, onend) => {
       .on('error', (err) => console.log(err, 'controller.url.download.error'))
 }
 
-module.exports = router
+export default router
