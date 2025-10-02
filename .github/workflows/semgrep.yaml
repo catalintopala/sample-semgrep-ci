@@ -9,7 +9,9 @@ on:
   # Scan mainline branches and report all findings:
   push:
     branches: 
-      - "main"
+      - main
+    paths:
+      - vulnerable-source-code
 
 jobs:
   semgrep_scan:
@@ -19,8 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       # A Docker image with Semgrep installed. Do not change this.
-      image: semgrep/semgrep@sha256:46c44b623972875ebc6273adb3d725f0411f81b52f8e077aabf21629a6190c39 # v1.135.0
-      options: --user root
+      image: semgrep/semgrep@sha256:709ac45fbf52e0e5c0b8577660cf960064cb7584eb9812d043e81e2e2fff0e09 # v1.139.0-nonroot
     # Skip any PR created by dependabot to avoid permission issues:
     if: (github.actor != 'dependabot[bot]')
     permissions:
